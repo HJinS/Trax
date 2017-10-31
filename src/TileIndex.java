@@ -2,6 +2,7 @@ public class TileIndex
 {
 	private int x,y;//index
 	private int tile_i;
+	/*btn[y][x]*/
 	public TileIndex(int x,int y,int tile_i)
 	{
 		this.x = x;

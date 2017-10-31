@@ -15,16 +15,17 @@ public class BtnClass
 	private Dimension ImageSize = new Dimension(70,70);
 	private ImageIcon []Tile = new ImageIcon[6];
 	private ImageIcon []tmpTile = new ImageIcon[6];
-	private int x = 55,y = 55;//Tile을 두는 장소 default (55,55) (index)
+	private int x = 55,y = 55;//Tile을 두는 장소(btn[y][x]) default (55,55)
 	private LinkedList<TileIndex> TileInfo = new LinkedList<TileIndex>();
 	private int iconindex = 4;//icon 배열 index
+	private int []Index_row = new int[127];//가로
+	private int []Index_column = new int[127];//세로
 	public BtnClass()
 	{
 		Image = icon.getImage();
 		changedImage = Image.getScaledInstance(ImageSize.width,ImageSize.height, Image.SCALE_SMOOTH);
 		icon = new ImageIcon(changedImage);
 		setTile();
-		//TraxBoard.panel.addMouseListener(new btnListener());
 		for(int i = 0;i < btn.length;i++){
 			for(int j = 0;j < btn[0].length ;j++){
 				btn[i][j] = new JButton();
@@ -35,12 +36,13 @@ public class BtnClass
 				btn[i][j].setPreferredSize(btnSize);
 				btn[i][j].addMouseListener(new btnListener());
 				btn[i][j].setIcon(icon);
-				btn[i][j].setBorderPainted(false);
+				//btn[i][j].setBorderPainted(false);
 				btn[i][j].setContentAreaFilled(false);
 				btn[i][j].setFocusPainted(false);
 				TraxBoard.panel.add(btn[i][j]);	
 			}
 		}
+		TraxBoard.panel.addMouseListener(new btnListener());
 	}
 	void setTile()
 	{
@@ -80,21 +82,102 @@ public class BtnClass
 	{
 		@Override
 		public void mouseClicked(MouseEvent e)
-		{
+		{	
 			if(!e.isMetaDown()){//왼쪽
 				if(isEmpty() == true){
 					if(iconindex == 1)
 						iconindex = 4;
 					else if(iconindex == 4)
 						iconindex = 1;
-					btn[x][y].setIcon(tmpTile[iconindex]);
+					btn[y][x].setIcon(tmpTile[iconindex]);
 				}
 				else{
-					System.out.println(e.getX() + "and" + btn[0][0].getWidth());
+					Object o = e.getSource();
+					for(int i = 0;i<128;i++){
+						for(int j = 0;j<128;j++){
+							if(o.equals(btn[i][j])){
+								x = j;
+								y = i;
+								break;
+							}
+						}
+					}
+					int row = 0;
+					int column = 0;
+					for(int i = 0;i<TileInfo.size();i++){
+						if(y == TileInfo.get(i).getY()){
+							Index_row[row] = i;
+							row++;
+						}
+						if(x == TileInfo.get(i).getX()){
+							Index_row[column] = i;
+							column++;
+						}
+					}
+					for(int i = 0;i<row;i++){
+						for(int j = i;j<row;j++){
+							if(TileInfo.get(Index_row[i]).getX() > TileInfo.get(Index_row[j]).getX()){
+								int tmp = Index_row[i];
+								Index_row[i] = Index_row[j];
+								Index_row[j] = tmp;
+							}
+						}
+					}
+					for(int i = 0;i<column;i++){
+						for(int j = i;j<column;j++){
+							if(TileInfo.get(Index_column[i]).getY() > TileInfo.get(Index_column[j]).getY()){
+								int tmp = Index_column[i];
+								Index_column[i] = Index_column[j];
+								Index_column[j] = tmp;
+							}
+						}
+					}
+					if(column == 0 && row != 0){
+						if(x < TileInfo.get(Index_row[0]).getX()){
+							x = TileInfo.get(Index_row[0]).getX() - 1;
+						}
+						else if(x > TileInfo.get(Index_row[row]).getX()){
+							x = TileInfo.get(Index_row[row]).getX() + 1;
+						}
+					}
+					else if(row == 0 && column != 0){
+						if(y < TileInfo.get(Index_column[0]).getY()){
+							y = TileInfo.get(Index_column[0]).getY() - 1;
+						}
+						else if(y > TileInfo.get(Index_column[column]).getY()){
+							y = TileInfo.get(Index_column[column]).getY() + 1;
+						}
+					}
+					else if (row != 0 && column != 0){
+						if(Math.abs(x - TileInfo.get(Index_row[0]).getX())
+							<Math.abs(y -TileInfo.get(Index_column[0]).getY())){
+							if(x < TileInfo.get(Index_row[0]).getX()){
+								x = TileInfo.get(Index_row[0]).getX() - 1;
+							}
+							else if(x > TileInfo.get(Index_row[row]).getX()){
+								x = TileInfo.get(Index_row[row]).getX() + 1;
+							}
+						}
+						else if(Math.abs(x - TileInfo.get(Index_row[0]).getX())
+								>Math.abs(y -TileInfo.get(Index_column[0]).getY())){
+							if(y < TileInfo.get(Index_column[0]).getY()){
+								y = TileInfo.get(Index_column[0]).getY() - 1;
+							}
+							else if(y > TileInfo.get(Index_column[column]).getY()){
+								y = TileInfo.get(Index_column[column]).getY() + 1;
+							}
+						}
+						else if(Math.abs(x - TileInfo.get(Index_row[0]).getX())
+								==Math.abs(y -TileInfo.get(Index_column[0]).getY())){
+							x = -1;
+							y = -1;
+							System.out.println("Invalid");
+						}
+					}
 				}
 			}
 			else{//오른쪽
-				btn[x][y].setIcon(Tile[iconindex]);
+				btn[y][x].setIcon(Tile[iconindex]);
 				TileInfo.add(new TileIndex(x,y,iconindex));
 			}
 		}
@@ -110,7 +193,6 @@ public class BtnClass
 
 		@Override
 		public void mouseExited(MouseEvent e){}
-
 		
 	}
 }
