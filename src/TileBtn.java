@@ -102,27 +102,27 @@ public class TileBtn implements ActionListener, KeyListener, MouseListener {
 	   
 	   tileImage = tile1.getImage();
 	   changedImage = tileImage.getScaledInstance(70,70, Image.SCALE_SMOOTH);
-	   tmp_tile1 = new ImageIcon(changedImage);
+	   tile1 = new ImageIcon(changedImage);
 	   
 	   tileImage = tile2.getImage();
 	   changedImage = tileImage.getScaledInstance(70,70, Image.SCALE_SMOOTH);
-	   tmp_tile2 = new ImageIcon(changedImage);
+	   tile2 = new ImageIcon(changedImage);
 	   
 	   tileImage = tile3.getImage();
 	   changedImage = tileImage.getScaledInstance(70,70, Image.SCALE_SMOOTH);
-	   tmp_tile3 = new ImageIcon(changedImage);
+	   tile3 = new ImageIcon(changedImage);
 	   
 	   tileImage = tile4.getImage();
 	   changedImage = tileImage.getScaledInstance(70,70, Image.SCALE_SMOOTH);
-	   tmp_tile4 = new ImageIcon(changedImage);
+	   tile4 = new ImageIcon(changedImage);
 	   
 	   tileImage = tile5.getImage();
 	   changedImage = tileImage.getScaledInstance(70,70, Image.SCALE_SMOOTH);
-	   tmp_tile5 = new ImageIcon(changedImage);
+	   tile5 = new ImageIcon(changedImage);
 	   
 	   tileImage = tile6.getImage();
 	   changedImage = tileImage.getScaledInstance(70,70, Image.SCALE_SMOOTH);
-	   tmp_tile6 = new ImageIcon(changedImage);
+	   tile6 = new ImageIcon(changedImage);
 	   
    }
    
@@ -178,7 +178,7 @@ public class TileBtn implements ActionListener, KeyListener, MouseListener {
                if (i == x && j == y)
                   continue;
                btn[i][j].setEnabled(false);
-               btn[i][j].setDisabledIcon(new ImageIcon("Img/0.png"));
+               btn[i][j].setDisabledIcon(backImageIcon);
             }
          }
       }
